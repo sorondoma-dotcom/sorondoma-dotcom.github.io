@@ -14,13 +14,14 @@ const loadPartials = async () => {
         <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-6 text-sm text-red-600">
           No se pudo cargar ${file}. Asegurate de servir el sitio desde un servidor local.
         </div>
-      `;scr
+      `;
       console.warn("Partial load failed:", file, err);
     }
   };
 
   await Promise.all(targets.map(loadOne));
   initReveal();
+  initContactForm();
 };
 
 const initReveal = () => {
@@ -45,6 +46,63 @@ const initReveal = () => {
   );
 
   elements.forEach((el) => observer.observe(el));
+};
+
+const initContactForm = () => {
+  const form = document.querySelector("#contact-form");
+  if (!form) return;
+
+  const status = document.querySelector("#contact-status");
+  const submitButton = form.querySelector("button[type=\"submit\"]");
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const formData = new FormData(form);
+    const payload = {
+      name: formData.get("nombre"),
+      email: formData.get("email"),
+      subject: formData.get("asunto"),
+      message: formData.get("mensaje"),
+    };
+
+    if (status) {
+      status.textContent = "Enviando mensaje...";
+    }
+    if (submitButton) {
+      submitButton.disabled = true;
+      submitButton.classList.add("opacity-70", "cursor-not-allowed");
+    }
+
+    try {
+      const endpoint = form.getAttribute("data-endpoint") || "/api/contact";
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({}));
+        throw new Error(error?.message || "No se pudo enviar el mensaje.");
+      }
+
+      if (status) {
+        status.textContent = "Mensaje enviado. Gracias por contactarme.";
+      }
+      form.reset();
+    } catch (err) {
+      if (status) {
+        status.textContent = "Error al enviar. Intentalo de nuevo o escribe a sorondoma@gmail.com.";
+      }
+      console.warn("Contact form error:", err);
+    } finally {
+      if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.classList.remove("opacity-70", "cursor-not-allowed");
+      }
+    }
+  });
 };
 
 if (document.readyState === "loading") {
