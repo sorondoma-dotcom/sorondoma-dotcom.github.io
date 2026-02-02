@@ -74,12 +74,16 @@ const initContactForm = () => {
       submitButton.classList.add("opacity-70", "cursor-not-allowed");
     }
 
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
+
     try {
       const endpoint = form.getAttribute("data-endpoint") || "/api/contact";
       const response = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
+        signal: controller.signal,
       });
 
       if (!response.ok) {
@@ -93,10 +97,14 @@ const initContactForm = () => {
       form.reset();
     } catch (err) {
       if (status) {
-        status.textContent = "Error al enviar. Intentalo de nuevo o escribe a sorondoma@gmail.com.";
+        const isTimeout = err?.name === "AbortError";
+        status.textContent = isTimeout
+          ? "El envio tardo demasiado. Intentalo otra vez en unos segundos."
+          : "Error al enviar. Intentalo de nuevo o escribe a sorondoma@gmail.com.";
       }
       console.warn("Contact form error:", err);
     } finally {
+      clearTimeout(timeoutId);
       if (submitButton) {
         submitButton.disabled = false;
         submitButton.classList.remove("opacity-70", "cursor-not-allowed");
