@@ -1,0 +1,30 @@
+<section id="contacto" class="py-12 mb-14">
+  <div class="reveal glass rounded-2xl p-8">
+    <h2 class="text-2xl font-semibold">Contacto</h2>
+    <p class="mt-3 text-black/80">Si buscas un perfil junior con ganas de crecer, hablemos.</p>
+    <form class="mt-6 grid gap-4 text-sm" action="mailto:sorondoma@gmail.com" method="post" enctype="text/plain">
+      <div class="grid gap-4 sm:grid-cols-2">
+        <label class="grid gap-2">
+          <span class="text-black/60">Nombre</span>
+          <input class="rounded-xl border border-black/10 bg-white/70 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" type="text" name="nombre" placeholder="Tu nombre" required />
+        </label>
+        <label class="grid gap-2">
+          <span class="text-black/60">Email</span>
+          <input class="rounded-xl border border-black/10 bg-white/70 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" type="email" name="email" placeholder="tu@email.com" required />
+        </label>
+      </div>
+      <label class="grid gap-2">
+        <span class="text-black/60">Asunto</span>
+        <input class="rounded-xl border border-black/10 bg-white/70 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" type="text" name="asunto" placeholder="Oferta, colaboracion, contacto..." required />
+      </label>
+      <label class="grid gap-2">
+        <span class="text-black/60">Mensaje</span>
+        <textarea class="min-h-[140px] rounded-xl border border-black/10 bg-white/70 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" name="mensaje" placeholder="Escribe tu mensaje" required></textarea>
+      </label>
+      <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <p class="text-xs text-black/50">Se abrira tu cliente de correo para enviar el mensaje.</p>
+        <button class="cta rounded-full bg-[var(--ink)] px-6 py-2 text-white hover:bg-black" type="submit">Enviar mensaje</button>
+      </div>
+    </form>
+  </div>
+</section>
