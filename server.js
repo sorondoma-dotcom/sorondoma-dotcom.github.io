@@ -18,6 +18,7 @@ if (allowedOrigin) {
 app.use(express.json());
 app.use(express.static(path.join(__dirname)));
 
+<<<<<<< HEAD
 const buildEmailText = ({ name, email, message }) =>
   `Nombre: ${name}\nEmail: ${email}\n\n${message}`;
 
@@ -57,8 +58,15 @@ const sendWithResend = async ({ name, email, subject, message }) => {
     throw new Error(errorMessage);
   }
 };
+=======
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url} origin=${req.headers.origin}`);
+  next();
+});
+>>>>>>> 3c72633b9f9271f94c29dd82bbe331c312beaac4
 
 app.post("/api/contact", async (req, res) => {
+  console.log("CONTACT BODY:", req.body);
   const { name, email, subject, message } = req.body || {};
 
   if (!name || !email || !subject || !message) {
@@ -66,14 +74,59 @@ app.post("/api/contact", async (req, res) => {
   }
 
   try {
+<<<<<<< HEAD
     await sendWithResend({ name, email, subject, message });
     return res.json({ ok: true });
   } catch (error) {
     console.error("Email send error:", error);
     return res.status(500).json({ message: error?.message || "Error enviando correo." });
-  }
+=======
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: Number(process.env.SMTP_PORT) || 587,
+      secure: process.env.SMTP_SECURE === "true",
+      connectionTimeout: 10000,
+      greetingTimeout: 10000,
+      socketTimeout: 15000,
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    });
+
+  const toEmail = process.env.TO_EMAIL || process.env.SMTP_USER;
+  const fromEmail = process.env.MAIL_FROM;
+if (!fromEmail) {
+  return res.status(500).json({ message: "Falta MAIL_FROM." });
+}
+
+await transporter.sendMail({
+  from: `Portfolio Contact <${fromEmail}>`,
+  to: toEmail,
+  replyTo: email,
+  subject: `[Portfolio] ${subject}`,
+  text: `Nombre: ${name}\nEmail: ${email}\n\n${message}`,
 });
+
+    return res.json({ ok: true });
+  } catch (error) {
+  console.error("Email send error:", {
+    message: error?.message,
+    code: error?.code,
+    command: error?.command,
+    response: error?.response,
+    responseCode: error?.responseCode,
+    errno: error?.errno,
+    syscall: error?.syscall,
+    address: error?.address,
+    port: error?.port,
+    stack: error?.stack
+    });
+>>>>>>> 3c72633b9f9271f94c29dd82bbe331c312beaac4
+  }
+
 
 app.listen(port, () => {
   console.log(`Servidor activo en http://localhost:${port}`);
-});
+  });
+})
