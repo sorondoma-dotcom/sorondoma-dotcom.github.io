@@ -66,10 +66,20 @@ await transporter.sendMail({
 
     return res.json({ ok: true });
   } catch (error) {
-    console.error("Email send error:", error);
-    return res.status(500).json({ message: "Error enviando correo." });
+  console.error("Email send error:", {
+    message: error?.message,
+    code: error?.code,
+    command: error?.command,
+    response: error?.response,
+    responseCode: error?.responseCode,
+    errno: error?.errno,
+    syscall: error?.syscall,
+    address: error?.address,
+    port: error?.port,
+    stack: error?.stack
+    });
   }
-});
+
 
 app.listen(port, () => {
   console.log(`Servidor activo en http://localhost:${port}`);
