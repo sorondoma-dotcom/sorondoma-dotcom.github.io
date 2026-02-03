@@ -83,4 +83,5 @@ await transporter.sendMail({
 
 app.listen(port, () => {
   console.log(`Servidor activo en http://localhost:${port}`);
-});
+  });
+})
