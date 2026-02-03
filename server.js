@@ -52,15 +52,16 @@ app.post("/api/contact", async (req, res) => {
 
   const toEmail = process.env.TO_EMAIL || process.env.SMTP_USER;
   const fromEmail = process.env.MAIL_FROM;
-  if (!fromEmail) {
-    return res.status(500).json({ message: "Falta MAIL_FROM." });
-  }
-  await transporter.sendMail({
-    from: `Portfolio Contact <${fromEmail}>`,
-    to: toEmail,
-    replyTo: email,
-    subject: `[Portfolio] ${subject}`,
-    text: `Nombre: ${name}\nEmail: ${email}\n\n${message}`,
+if (!fromEmail) {
+  return res.status(500).json({ message: "Falta MAIL_FROM." });
+}
+
+await transporter.sendMail({
+  from: `Portfolio Contact <${fromEmail}>`,
+  to: toEmail,
+  replyTo: email,
+  subject: `[Portfolio] ${subject}`,
+  text: `Nombre: ${name}\nEmail: ${email}\n\n${message}`,
 });
 
     return res.json({ ok: true });
