@@ -19,7 +19,13 @@ if (allowedOrigin) {
 app.use(express.json());
 app.use(express.static(path.join(__dirname)));
 
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url} origin=${req.headers.origin}`);
+  next();
+});
+
 app.post("/api/contact", async (req, res) => {
+  console.log("CONTACT BODY:", req.body);
   const { name, email, subject, message } = req.body || {};
 
   if (!name || !email || !subject || !message) {
@@ -44,15 +50,18 @@ app.post("/api/contact", async (req, res) => {
       },
     });
 
-    const toEmail = process.env.TO_EMAIL || process.env.SMTP_USER;
-
-    await transporter.sendMail({
-      from: `"Portfolio Contact" <${process.env.SMTP_USER}>`,
-      to: toEmail,
-      replyTo: email,
-      subject: `[Portfolio] ${subject}`,
-      text: `Nombre: ${name}\nEmail: ${email}\n\n${message}`,
-    });
+  const toEmail = process.env.TO_EMAIL || process.env.SMTP_USER;
+  const fromEmail = process.env.MAIL_FROM;
+  if (!fromEmail) {
+    return res.status(500).json({ message: "Falta MAIL_FROM." });
+  }
+  await transporter.sendMail({
+    from: `Portfolio Contact <${fromEmail}>`,
+    to: toEmail,
+    replyTo: email,
+    subject: `[Portfolio] ${subject}`,
+    text: `Nombre: ${name}\nEmail: ${email}\n\n${message}`,
+});
 
     return res.json({ ok: true });
   } catch (error) {
