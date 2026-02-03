@@ -18,7 +18,6 @@ if (allowedOrigin) {
 app.use(express.json());
 app.use(express.static(path.join(__dirname)));
 
-<<<<<<< HEAD
 const buildEmailText = ({ name, email, message }) =>
   `Nombre: ${name}\nEmail: ${email}\n\n${message}`;
 
@@ -58,12 +57,11 @@ const sendWithResend = async ({ name, email, subject, message }) => {
     throw new Error(errorMessage);
   }
 };
-=======
+
 app.use((req, res, next) => {
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.url} origin=${req.headers.origin}`);
   next();
 });
->>>>>>> 3c72633b9f9271f94c29dd82bbe331c312beaac4
 
 app.post("/api/contact", async (req, res) => {
   console.log("CONTACT BODY:", req.body);
@@ -74,13 +72,6 @@ app.post("/api/contact", async (req, res) => {
   }
 
   try {
-<<<<<<< HEAD
-    await sendWithResend({ name, email, subject, message });
-    return res.json({ ok: true });
-  } catch (error) {
-    console.error("Email send error:", error);
-    return res.status(500).json({ message: error?.message || "Error enviando correo." });
-=======
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: Number(process.env.SMTP_PORT) || 587,
@@ -122,7 +113,6 @@ await transporter.sendMail({
     port: error?.port,
     stack: error?.stack
     });
->>>>>>> 3c72633b9f9271f94c29dd82bbe331c312beaac4
   }
 
 
